@@ -12,6 +12,15 @@ module.exports = {
             option.setName('fraktion')
                 .setDescription('Der Name der Fraktion, die verwarnt wird.')
                 .setRequired(true))
+        .addIntegerOption(option =>
+            option.setName('warnstufe')
+                .setDescription('Die Verwarnungsstufe (1, 2 oder 3).')
+                .setRequired(true)
+                .addChoices(
+                    { name: '1', value: 1 },
+                    { name: '2', value: 2 },
+                    { name: '3', value: 3 }
+                ))
         .addStringOption(option =>
             option.setName('grund')
                 .setDescription('Der Grund für die Verwarnung.')
@@ -23,6 +32,7 @@ module.exports = {
             }
 
             const fraktion = interaction.options.getString('fraktion');
+            const warnstufe = interaction.options.getInteger('warnstufe');
             const reason = interaction.options.getString('grund');
             const logChannel = interaction.guild.channels.cache.get(LOG_CHANNEL_ID);
 
@@ -34,9 +44,10 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setColor(config.embedSettings.warningColor)
-                .setTitle('FRAKTION VERWARNT')
+                .setTitle('VERWARNUNG')
                 .setDescription(
                     `Die Fraktion **${fraktion}** wurde verwarnt!\n\n` +
+                    `**Stufe:** ${warnstufe}\n` +
                     `**Grund:** \`${reason}\`\n` +
                     `**Am:** <t:${nowUnix}:f>\n\n` +
                     `Mit freundlichen Grüßen,\n<@${interaction.user.id}>`

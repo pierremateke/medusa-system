@@ -12,9 +12,9 @@ module.exports = {
             option.setName('fraktion')
                 .setDescription('Der Name der Fraktion, die offiziell gegründet wird.')
                 .setRequired(true))
-        .addStringOption(option =>
-            option.setName('beschreibung')
-                .setDescription('Eine kurze Beschreibung der Fraktion.')
+        .addBooleanOption(option =>
+            option.setName('probephase')
+                .setDescription('Ist die Fraktion in der Probephase? (Ja/Nein)')
                 .setRequired(true)),
     async execute(interaction) {
         try {
@@ -23,7 +23,7 @@ module.exports = {
             }
 
             const fraktion = interaction.options.getString('fraktion');
-            const description = interaction.options.getString('beschreibung');
+            const isProbephase = interaction.options.getBoolean('probephase');
             const logChannel = interaction.guild.channels.cache.get(LOG_CHANNEL_ID);
 
             if (!logChannel) {
@@ -31,13 +31,15 @@ module.exports = {
             }
 
             const nowUnix = Math.floor(Date.now() / 1000);
+            const sevenDaysLaterUnix = nowUnix + 7 * 24 * 60 * 60; // 7 Tage Aufbau-Schutz
 
             const embed = new EmbedBuilder()
                 .setColor(config.embedSettings.successColor)
-                .setTitle('FRAKTION GEGRÜNDET')
+                .setTitle('OFFIZIELL')
                 .setDescription(
-                    `Die Fraktion **${fraktion}** wurde offiziell gegründet!\n\n` +
-                    `**Beschreibung:** ${description}\n` +
+                    `Die Fraktion **${fraktion}** ist nun offiziell!\n\n` +
+                    `**Probephase:** ${isProbephase ? 'Ja' : 'Nein'}\n` +
+                    `**Aufbau-Schutz:** Bis <t:${sevenDaysLaterUnix}:f>\n` +
                     `**Am:** <t:${nowUnix}:f>\n\n` +
                     `Mit freundlichen Grüßen,\n<@${interaction.user.id}>`
                 )

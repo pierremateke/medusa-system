@@ -34,9 +34,9 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setColor(config.embedSettings.errorColor)
-                .setTitle('FRAKTION AUFGELÖST')
+                .setTitle('AUFGELÖST')
                 .setDescription(
-                    `Die Fraktion **${fraktion}** wurde offiziell aufgelöst!\n\n` +
+                    `Die Fraktion **${fraktion}** wurde aufgelöst!\n\n` +
                     `**Grund:** \`${reason}\`\n` +
                     `**Am:** <t:${nowUnix}:f>\n\n` +
                     `Mit freundlichen Grüßen,\n<@${interaction.user.id}>`

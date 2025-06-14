@@ -6,7 +6,7 @@ const LOG_CHANNEL_ID = '1380000306859085845'; // Ersetze durch die ID des Log-Ka
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('nuttensohn')
+        .setName('frak-offiziell')
         .setDescription('» Verkündet die offizielle Gründung einer Fraktion.')
         .addStringOption(option =>
             option.setName('fraktion')

@@ -2,11 +2,11 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const config = require('../config.json');
 
 const ADMIN_ROLE_ID = '1380000149371359254'; // Ersetze durch die ID der Admin-Rolle
-const LOG_CHANNEL_ID = '1380000369177792592'; // Ersetze durch die ID des Log-Kanals
+const LOG_CHANNEL_ID = '1380000306859085845'; // Ersetze durch die ID des Log-Kanals
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('frak-offiziell')
+        .setName('nuttensohn')
         .setDescription('» Verkündet die offizielle Gründung einer Fraktion.')
         .addStringOption(option =>
             option.setName('fraktion')

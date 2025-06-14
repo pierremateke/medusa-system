@@ -56,6 +56,17 @@ async function checkStreamerStatus(client) {
             console.error(`Fehler beim Abrufen des Status von ${username}:`, error);
         }
     }
+    // Entferne Streamer, die nicht mehr live sind
+    for (const username of liveAnnounced.keys()) {
+        if (!twitchData.some(streamer => streamer.username === username && liveAnnounced.get(username))) {
+            liveAnnounced.delete(username);
+        }
+    }
+    console.log('Twitch-Streamer-Status überprüft.');
+    // Optional: Logge die Anzahl der live Streamer
+    console.log(`Anzahl der live Streamer: ${liveAnnounced.size}`);
+    // Optional: Logge die Namen der live Streamer
+    console.log(`Live Streamer: ${Array.from(liveAnnounced.keys()).join(', ')}`);
 }
 
 module.exports = {

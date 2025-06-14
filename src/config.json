@@ -10,6 +10,7 @@
   "embedSettings": {
     "mainColor": "#2d8804",
     "errorColor": "#ff0000",
+    "warningColor": "#ff9900",
     "successColor": "#00ff00",
     "authorName": "Medusa Roleplay",
     "authorIconURL": "https://cdn.discordapp.com/attachments/1282356111424356414/1315279689425752165/Logo_Animation_unter_10mb.gif",

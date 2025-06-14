@@ -46,7 +46,7 @@ module.exports = {
                 .setColor(config.embedSettings.warningColor)
                 .setTitle('VERWARNUNG')
                 .setDescription(
-                    `Die Fraktion **${fraktion}** wurde verwarnt!\n\n` +
+                    `Die Fraktion **${fraktion}** erhält hiermit einen Fraktions Warn!\n\n` +
                     `**Stufe:** ${warnstufe}\n` +
                     `**Grund:** \`${reason}\`\n` +
                     `**Am:** <t:${nowUnix}:f>\n\n` +

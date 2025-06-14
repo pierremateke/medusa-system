@@ -1,0 +1,257 @@
+const { EmbedBuilder, Events, AuditLogEvent } = require("discord.js");
+const config = require('../config.json');
+
+module.exports = (client) => {
+    const loggingConfig = config.loggingSystem;
+
+    if (!loggingConfig.enabled) {
+        return;
+    }
+
+    const joinlogging = loggingConfig.joinlogging;
+    const leavelogging = loggingConfig.leavelogging;
+    const channelcreatelogging = loggingConfig.channelcreatelogging;
+    const channeldeletelogging = loggingConfig.channeldeletelogging;
+    const rolecreatelogging = loggingConfig.rolecreatelogging;
+    const roledeletelogging = loggingConfig.roledeletelogging;
+    const roleupdatelogging = loggingConfig.roleupdatelogging;
+    const guildbanaddlogging = loggingConfig.guildbanaddlogging;
+    const guildbanremovelogging = loggingConfig.guildbanremovelogging;
+    const guildmemberupdatelogging = loggingConfig.guildmemberupdatelogging;
+    const messageupdatelogging = loggingConfig.messageupdatelogging;
+    const messagedeletelogging = loggingConfig.messagedeletelogging;
+    const embedConfig = loggingConfig.embed;
+
+    // Funktion zum Senden von Logs
+    const sendLog = async (guild, title, description, color, thumbnail, logChannelId) => {
+        if (!logChannelId) {
+            return;
+        }
+
+        const logChannel = guild.channels.cache.get(logChannelId);
+        if (!logChannel || !logChannel.isTextBased()) return;
+
+        const logEmbed = new EmbedBuilder()
+            .setTitle(title)
+            .setDescription(description)
+            .setColor(color)
+            .setAuthor({ name: config.embedSettings.authorName, iconURL: config.embedSettings.authorIconURL })
+            .setFooter({ text: config.embedSettings.footerText, iconURL: config.embedSettings.footerIconURL });
+
+        if (thumbnail) {
+            logEmbed.setThumbnail(thumbnail);
+        }
+
+        try {
+            await logChannel.send({ embeds: [logEmbed] });
+        } catch (error) {
+            console.error(`Error sending log to channel ${logChannelId}: ${error}`);
+        }
+    };
+
+    // Join Logging
+    client.on(Events.GuildMemberAdd, async (member) => {
+        const description = `<@${member.id}> (${member.id}) **joined** the server.`;
+        sendLog(member.guild, "Join - Logging", description, config.embedSettings.successColor, member.user.displayAvatarURL({ dynamic: true }), joinlogging);
+    });
+
+    // Leave Logging
+    client.on(Events.GuildMemberRemove, async (member) => {
+        const description = `<@${member.id}> (${member.id}) **left** the server.`;
+        sendLog(member.guild, "Leave - Logging", description, config.embedSettings.errorColor, member.user.displayAvatarURL({ dynamic: true }), leavelogging);
+    });
+
+    // Channel Logging
+    client.on(Events.ChannelCreate, async (channel) => {
+        const fetchedLogs = await channel.guild.fetchAuditLogs({
+            limit: 1,
+            type: AuditLogEvent.ChannelCreate,
+        });
+
+        const channelCreationLog = fetchedLogs.entries.first();
+
+        let executor = null;
+        if (channelCreationLog) {
+            executor = channelCreationLog.executor;
+        }
+
+        let description = '';
+        if (channel.type === 0) { // Textkanal
+            description = `Text channel <#${channel.id}> (${channel.id}) **created** by ${executor ? `<@${executor.id}> (${executor.id})` : 'Unknown'}.`;
+        } else if (channel.type === 2) { // Sprachkanal
+            description = `Voice channel <#${channel.id}> (${channel.id}) **created** by ${executor ? `<@${executor.id}> (${executor.id})` : 'Unknown'}.`;
+        }
+        sendLog(channel.guild, "Channel Create - Logging", description, config.embedSettings.successColor, null, channelcreatelogging);
+    });
+
+    client.on(Events.ChannelDelete, async (channel) => {
+        const fetchedLogs = await channel.guild.fetchAuditLogs({
+            limit: 1,
+            type: AuditLogEvent.ChannelDelete,
+        });
+
+        const channelDeletionLog = fetchedLogs.entries.first();
+
+        let executor = null;
+        if (channelDeletionLog) {
+            executor = channelDeletionLog.executor;
+        }
+
+        let description = '';
+        if (channel.type === 0) { // Textkanal
+            description = `Text channel \`${channel.name}\` (${channel.id}) **deleted** by ${executor ? `<@${executor.id}> (${executor.id})` : 'Unknown'}.`;
+        } else if (channel.type === 2) { // Sprachkanal
+            description = `Voice channel \`${channel.name}\` (${channel.id}) **deleted** by ${executor ? `<@${executor.id}> (${executor.id})` : 'Unknown'}.`;
+        }
+        sendLog(channel.guild, "Channel Delete - Logging", description, config.embedSettings.errorColor, null, channeldeletelogging);
+    });
+
+    // Role Logging
+    client.on(Events.RoleCreate, async (role) => {
+        try {
+            const fetchedLogs = await role.guild.fetchAuditLogs({
+                limit: 1,
+                type: AuditLogEvent.RoleCreate,
+            });
+
+            const roleCreationLog = fetchedLogs.entries.first();
+            let executor = null;
+
+            if (roleCreationLog) {
+                executor = roleCreationLog.executor;
+            }
+
+            const description = `Role <@&${role.id}> (${role.id}) **created** by ${executor ? `<@${executor.id}> (${executor.id})` : 'Unknown'}.`;
+            sendLog(role.guild, "Role Create - Logging", description, config.embedSettings.successColor, null, rolecreatelogging);
+        } catch (error) {
+            console.error("Error fetching audit logs for role creation:", error);
+        }
+    });
+
+    client.on(Events.RoleDelete, async (role) => {
+        try {
+            const fetchedLogs = await role.guild.fetchAuditLogs({
+                limit: 1,
+                type: AuditLogEvent.RoleDelete,
+            });
+
+            const roleDeletionLog = fetchedLogs.entries.first();
+            let executor = null;
+
+            if (roleDeletionLog) {
+                executor = roleDeletionLog.executor;
+            }
+
+            const description = `Role \`${role.name}\` (${role.id}) **deleted** by ${executor ? `<@${executor.id}> (${executor.id})` : 'Unknown'}.`;
+            sendLog(role.guild, "Role Delete - Logging", description, config.embedSettings.errorColor, null, roledeletelogging);
+        } catch (error) {
+            console.error("Error fetching audit logs for role deletion:", error);
+        }
+    });
+
+    client.on(Events.RoleUpdate, async (oldRole, newRole) => {
+        try {
+            const fetchedLogs = await newRole.guild.fetchAuditLogs({
+                limit: 1,
+                type: AuditLogEvent.RoleUpdate,
+            });
+
+            const roleUpdateLog = fetchedLogs.entries.first();
+            let executor = null;
+
+            if (roleUpdateLog) {
+                executor = roleUpdateLog.executor;
+            }
+
+            let description = `Role <@&${newRole.id}> (${newRole.id}) **updated** by ${executor ? `<@${executor.id}> (${executor.id})` : 'Unknown'}.\n`;
+
+            if (oldRole.name !== newRole.name) {
+                description += `> Name changed from \`${oldRole.name}\` to \`${newRole.name}\`\n`;
+            }
+            if (oldRole.hexColor !== newRole.hexColor) {
+                description += `> Color changed from \`${oldRole.hexColor}\` to \`${newRole.hexColor}\`\n`;
+            }
+
+            sendLog(newRole.guild, "Role Update - Logging", description, config.embedSettings.mainColor, null, roleupdatelogging);
+        } catch (error) {
+            console.error("Error fetching audit logs for role update:", error);
+        }
+    });
+
+    // Discord Mod Logging (Timeout, Kick, Ban)
+    client.on(Events.GuildBanAdd, async (ban) => {
+        const fetchedLogs = await ban.guild.fetchAuditLogs({
+            limit: 1,
+            type: AuditLogEvent.GuildBanAdd,
+        });
+
+        const banLog = fetchedLogs.entries.first();
+        let executor = null;
+
+        if (banLog) {
+            executor = banLog.executor;
+        }
+        const description = `<@${ban.user.id}> (${ban.user.id}) **banned** from the server by ${executor ? `<@${executor.id}> (${executor.id})` : 'Unknown'}. Reason: ${ban.reason || "No reason provided."}`;
+        sendLog(ban.guild, "Discord Mod - Logging", description, config.embedSettings.errorColor, ban.user.displayAvatarURL({ dynamic: true }), guildbanaddlogging);
+    });
+
+    client.on(Events.GuildBanRemove, async (ban) => {
+        const fetchedLogs = await ban.guild.fetchAuditLogs({
+            limit: 1,
+            type: AuditLogEvent.GuildBanRemove,
+        });
+
+        const unbanLog = fetchedLogs.entries.first();
+        let executor = null;
+
+        if (unbanLog) {
+            executor = unbanLog.executor;
+        }
+        const description = `<@${ban.user.id}> (${ban.user.id}) **unbanned** from the server by ${executor ? `<@${executor.id}> (${executor.id})` : 'Unknown'}.`;
+        sendLog(ban.guild, "Discord Mod - Logging", description, config.embedSettings.successColor, ban.user.displayAvatarURL({ dynamic: true }), guildbanremovelogging);
+    });
+
+    client.on(Events.GuildMemberUpdate, async (oldMember, newMember) => {
+        if (oldMember.communicationDisabledUntilTimestamp !== newMember.communicationDisabledUntilTimestamp) {
+            const fetchedLogs = await newMember.guild.fetchAuditLogs({
+                limit: 1,
+                type: AuditLogEvent.MemberUpdate,
+            });
+
+            const muteLog = fetchedLogs.entries.first();
+            let executor = null;
+
+            if (muteLog) {
+                executor = muteLog.executor;
+            }
+            if (newMember.communicationDisabledUntilTimestamp) {
+                const timeoutEnd = new Date(newMember.communicationDisabledUntilTimestamp);
+                const description = `<@${newMember.id}> (${newMember.id}) **timed out** until <t:${Math.floor(timeoutEnd.getTime() / 1000)}:F> by ${executor ? `<@${executor.id}> (${executor.id})` : 'Unknown'}.`;
+                sendLog(newMember.guild, "Discord Mod - Logging", description, config.embedSettings.errorColor, newMember.user.displayAvatarURL({ dynamic: true }), guildmemberupdatelogging);
+            } else {
+                const description = `<@${newMember.id}> (${newMember.id}) **timeout removed** by ${executor ? `<@${executor.id}> (${executor.id})` : 'Unknown'}.`;
+                sendLog(newMember.guild, "Discord Mod - Logging", description, config.embedSettings.successColor, newMember.user.displayAvatarURL({ dynamic: true }), guildmemberupdatelogging);
+            }
+        }
+    });
+
+    // Message Logging
+    client.on(Events.MessageUpdate, async (oldMessage, newMessage) => {
+        if (oldMessage.content === newMessage.content) return;
+
+        const description = `Message edited in <#${newMessage.channel.id}>\n` +
+            `Author: <@${newMessage.author.id}> (${newMessage.author.id})\n` +
+            `Old Message: ${oldMessage.content}\n` +
+            `New Message: ${newMessage.content}`;
+
+        sendLog(newMessage.guild, "Message Edit - Logging", description, config.embedSettings.mainColor, null, messageupdatelogging);
+    });
+
+    client.on(Events.MessageDelete, async (message) => {
+        const description = `Message deleted in <#${message.channel.id}>\n` +
+            `Author: <@${message.author.id}> (${message.author.id})\n` +
+            `Content: ${message.content}`;
+
+        sendLog(message.guild, "Message Delete - Logging", description, config.embedSettings.errorColor, null, messagedeletelogging);
+    });
+};

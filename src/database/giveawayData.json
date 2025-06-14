@@ -1,0 +1,207 @@
+[
+  {
+    "id": "1749485733886",
+    "channelId": "1380000295073087562",
+    "messageId": "1381668053082837053",
+    "preis": "test",
+    "beschreibung": "test",
+    "endTime": 1749485793886,
+    "gewinner": 1,
+    "participants": [
+      "934085062683684874"
+    ],
+    "ended": false,
+    "endTimestamp": 1749485759192
+  },
+  {
+    "id": "1749488907991",
+    "channelId": "1380000295073087562",
+    "messageId": "1381681366466297997",
+    "preis": "test",
+    "anzahl": 1,
+    "beschreibung": "test",
+    "regeln": "testt",
+    "endTime": 1749488967991,
+    "participants": [
+      "934085062683684874"
+    ],
+    "ended": false
+  },
+  {
+    "id": "1749489192046",
+    "channelId": "1380000295073087562",
+    "messageId": "1381682557480992962",
+    "preis": "test",
+    "anzahl": 2,
+    "beschreibung": "Keine",
+    "regeln": "Keine",
+    "endTime": 1749489252046,
+    "participants": [],
+    "ended": false
+  },
+  {
+    "id": "1749489567628",
+    "channelId": "1380000295073087562",
+    "messageId": "1381684133088198717",
+    "preis": "test",
+    "anzahl": 2,
+    "beschreibung": "Keine",
+    "regeln": "Keine",
+    "endTime": 1749489627628,
+    "participants": [
+      "934085062683684874"
+    ],
+    "ended": false
+  },
+  {
+    "id": "1749489678353",
+    "channelId": "1380000295073087562",
+    "messageId": "1381684597485469750",
+    "preis": "1",
+    "anzahl": 1,
+    "beschreibung": "Keine",
+    "regeln": "Keine",
+    "endTime": 1749489738353,
+    "participants": [
+      "934085062683684874"
+    ],
+    "ended": false
+  },
+  {
+    "id": "1749490074315",
+    "channelId": "1380000295073087562",
+    "messageId": "1381686258107023551",
+    "preis": "1",
+    "anzahl": 1,
+    "beschreibung": "Keine",
+    "regeln": "Keine",
+    "endTime": 1749490134315,
+    "participants": [
+      "934085062683684874"
+    ],
+    "ended": false
+  },
+  {
+    "id": "1749490138160",
+    "channelId": "1380000295073087562",
+    "messageId": "1381686525971927191",
+    "preis": "1",
+    "anzahl": 1,
+    "beschreibung": "test",
+    "regeln": "Keine",
+    "endTime": 1749490198159,
+    "participants": [
+      "934085062683684874"
+    ],
+    "ended": false
+  },
+  {
+    "id": "1749490491751",
+    "channelId": "1380000295073087562",
+    "messageId": "1381688009090666516",
+    "preis": "1",
+    "anzahl": 1,
+    "beschreibung": "test",
+    "regeln": "test",
+    "endTime": 1749490551750,
+    "participants": [
+      "934085062683684874"
+    ],
+    "ended": false
+  },
+  {
+    "id": "1749490677955",
+    "channelId": "1380000295073087562",
+    "messageId": "1381688790430777434",
+    "preis": "1",
+    "anzahl": 1,
+    "beschreibung": "Keine",
+    "regeln": "Keine",
+    "endTime": 1749490737954,
+    "participants": [],
+    "ended": false
+  },
+  {
+    "id": "1749491233903",
+    "channelId": "1380000295073087562",
+    "messageId": "1381691121838719100",
+    "preis": "1",
+    "anzahl": 1,
+    "beschreibung": "Keine",
+    "regeln": "Keine",
+    "endTime": 1749491293902,
+    "participants": [],
+    "ended": false,
+    "hostedBy": "934085062683684874"
+  },
+  {
+    "id": "1749491316956",
+    "channelId": "1380000295073087562",
+    "messageId": "1381691470255231006",
+    "preis": "1",
+    "anzahl": 1,
+    "beschreibung": "Keine",
+    "regeln": "Keine",
+    "endTime": 1749491376955,
+    "participants": [],
+    "ended": false,
+    "hostedBy": "934085062683684874"
+  },
+  {
+    "id": "1749491374900",
+    "channelId": "1380000295073087562",
+    "messageId": "1381691712912625836",
+    "preis": "1",
+    "anzahl": 1,
+    "beschreibung": "Keine",
+    "regeln": "Keine",
+    "endTime": 1749491434900,
+    "participants": [],
+    "ended": false,
+    "hostedBy": "934085062683684874"
+  },
+  {
+    "id": "1749491423255",
+    "channelId": "1380000295073087562",
+    "messageId": "1381691916219060324",
+    "preis": "1",
+    "anzahl": 3,
+    "beschreibung": "Keine",
+    "regeln": "Keine",
+    "endTime": 1749491483255,
+    "participants": [],
+    "ended": false,
+    "hostedBy": "934085062683684874"
+  },
+  {
+    "id": "1749491842298",
+    "channelId": "1380000295073087562",
+    "messageId": "1381693674173235332",
+    "preis": "1",
+    "anzahl": 1,
+    "beschreibung": "Keine",
+    "regeln": "Keine",
+    "endTime": 1749491902297,
+    "participants": [
+      "934085062683684874"
+    ],
+    "ended": false,
+    "hostedBy": "934085062683684874"
+  },
+  {
+    "id": "1749492338882",
+    "channelId": "1380000295073087562",
+    "messageId": "1381695756356030636",
+    "preis": "1",
+    "anzahl": 1,
+    "beschreibung": "Keine",
+    "regeln": "Keine",
+    "endTime": 1749492398882,
+    "participants": [
+      "934085062683684874",
+      "818213276726984724"
+    ],
+    "ended": false,
+    "hostedBy": "934085062683684874"
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "name": "tea-garden",
+  "version": "1.0.0",
+  "description": "A Discord bot base for Tea Garden.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "axios": "^1.9.0",
+    "chalk": "^4.1.2",
+    "discord-html-transcripts": "^3.2.0",
+    "discord.js": "^14.19.3",
+    "dotenv": "^16.0.0",
+    "ms": "^2.1.3"
+  }
+}

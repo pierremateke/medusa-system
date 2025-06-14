@@ -1,0 +1,236 @@
+{
+  "bot": {
+    "token": "MTEwOTEzNDc3MDk1MDEyMzY5Mw.GO0EoW.s-xa0StczIdyqnSD6Z4Nq8jUCu9pkPdQOUdXSk",
+    "guildId": "1360739482382499960",
+    "clientId": "1109134770950123693"
+  },
+
+
+
+  "embedSettings": {
+    "mainColor": "#2d8804",
+    "errorColor": "#ff0000",
+    "successColor": "#00ff00",
+    "authorName": "Medusa Roleplay",
+    "authorIconURL": "https://cdn.discordapp.com/attachments/1282356111424356414/1315279689425752165/Logo_Animation_unter_10mb.gif",
+    "footerText": "Copyright © 2025 | Medusa Roleplay.",
+    "footerIconURL": "https://cdn.discordapp.com/attachments/1282356111424356414/1315279689425752165/Logo_Animation_unter_10mb.gif"
+  },
+
+
+  
+  "loggingSystem": {
+    "enabled": true,
+    "clearlogging": "1381614771006214155",
+    "joinlogging": "1381633220407464050",
+    "leavelogging": "1381633220407464050",
+    "channelcreatelogging": "1381628697483804712",
+    "channeldeletelogging": "1381628697483804712",
+    "rolecreatelogging": "1381628697483804712",
+    "roledeletelogging": "1381628697483804712",
+    "roleupdatelogging": "1381628697483804712",
+    "guildbanaddlogging": "1381628697483804712",
+    "guildbanremovelogging": "1381628697483804712",
+    "guildmemberupdatelogging": "1381628697483804712",
+    "messageupdatelogging": "1381628697483804712",
+    "messagedeletelogging": "1381628697483804712"
+  },
+
+
+  
+  "ticketSystem": {
+    "enabled": true,
+    "logChannelId": "1380000255176736849",
+    "categories": {
+      "support": {
+        "id": "1380000240345808906",
+        "roles": ["1380000150336045249"],
+        "label": "Support",
+        "emoji": "🎫"
+      },
+      "team": {
+        "id": "1380000241734123641",
+        "roles": ["1380000150336045249"],
+        "label": "Team",
+        "emoji": "🎫"
+      },
+      "entbannung": {
+        "id": "1380000242828705883",
+        "roles": ["1380000150336045249"],
+        "label": "Entbannung",
+        "emoji": "🎫"
+      },
+      "fraktion": {
+        "id": "1380000243730350264",
+        "roles": ["1380000150336045249"], 
+        "label": "Fraktion",
+        "emoji": "🎫"
+      },
+      "dev": {
+        "id": "1380000245118926869",
+        "roles": ["1380000150336045249"],
+        "label": "Developer",
+        "emoji": "🎫"
+      },
+      "projektleitung": {
+        "id": "1380000246150467635",
+        "roles": ["1380000150336045249"],
+        "label": "Projektleitung",
+        "emoji": "🎫"
+      }
+    },
+    "texts": {
+      "ticketCreated": "Dein Ticket wurde erstellt: <#{channelId}>",
+      "noPermissions": "Du hast keine Berechtigung, dies zu tun.",
+      "confirmClose": "Bist du sicher, dass du dieses Ticket schließen möchtest?",
+      "ticketDeleting": "Ticket wird in 5 Sekunden gelöscht...",
+      "ticketReopened": "Ticket wurde wieder geöffnet.",
+      "invalidCategory": "Ungültige Kategorie ausgewählt. Bitte kontaktiere einen Administrator."
+    },
+    "embeds": {
+      "setup": {
+        "title": "TICKETSYSTEM",
+        "description": "Du brauchst Unterstützung oder möchtest dich mit unserem Team in Verbindung setzen?\n\nWähle einfach unten eine passende Kategorie aus, um ein Ticket zu eröffnen. Wir kümmern uns schnellstmöglich um dein Anliegen!\n\n**Kategorien & Auslastung:**\n{categoryLoads}\n\nDie Auslastungsanzeige hilft dir einzuschätzen, wie viele Anfragen wir aktuell bearbeiten und wie schnell du voraussichtlich eine Antwort erhältst.",
+        "image": "https://cdn.discordapp.com/attachments/1282356111424356414/1380618813594276012/placeholder-banner.png?ex=684488f7&is=68433777&hm=a1d58dadfa7a0346befc71efc5cb3ca385da0a434166d4147b14b0574076717a&",
+        "thumbnail": "https://cdn.discordapp.com/attachments/1282356111424356414/1315279689425752165/Logo_Animation_unter_10mb.gif?ex=6841802a&is=68402eaa&hm=3b76ed74d1013b12d5f3e2741d0760f4c55879ef15cd6c0ab6a68078ac7ff21d&"
+      },
+      "ticketCreate": {
+        "title": "{category} Ticket",
+        "description": "Dein Ticket wurde erstellt! Das Team hilft dir gleich weiter.\n\n**Informationen:**\n> **Opener:** {user}\n> **Kategorie:** {category}\n> **Ticket-ID:** `{ticketId}`\n> **Erstellt:** {created}"
+      },
+      "ticketClose": {
+        "title": "Ticket geschlossen",
+        "description": "Ticket wurde von {closer} geschlossen.\nTicket-ID: `{ticketId}`"
+      },
+      "ticketLogCreate": {
+        "title": "Ticket erstellt",
+        "description": "Ticket erstellt: <#{channelId}> - `{channelName}`",
+        "fields": [
+          {
+            "name": "Ticket-ID",
+            "value": "{ticketId}",
+            "inline": true
+          },
+          {
+            "name": "Kategorie",
+            "value": "{category}",
+            "inline": true
+          },
+          {
+            "name": "Opener",
+            "value": "{user} ({userTag})",
+            "inline": true
+          }
+        ]
+      },
+      "ticketLogClose": {
+        "title": "Ticket geschlossen",
+        "description": "Ticket geschlossen: <#{channelId}>",
+        "fields": [
+          {
+            "name": "Ticket-ID",
+            "value": "{ticketId}",
+            "inline": true
+          },
+          {
+            "name": "Geschlossen von",
+            "value": "{closer} ({closerTag})",
+            "inline": true
+          },
+          {
+            "name": "Channel",
+            "value": "<#{channelId}>",
+            "inline": true
+          }
+        ]
+      }
+    },
+    "showLoad": true,
+    "loadEmojis": {
+      "green": "<:bar_green:1380622671615889440>",
+      "yellow": "<:bar_yellow:1380622678234370169>",
+      "orange": "<:bar_orange:1380622673255727184>",
+      "red": "<:bar_red:1380622675726303282>"
+    }
+  },
+
+
+  
+  "suggestionSystem": {
+    "enabled": true,
+    "suggestionChannelId": "1380000324139356251",
+    "yesEmojiId": "1380617250217791548",
+    "noEmojiId": "1380617251925004289",
+    "embed": {
+      "title": "VORSCHLAG"
+    }
+  },
+
+
+  
+  "teamlistSystem": {
+    "enabled": true,
+    "channelId": "1380000366778781827",
+    "roleIds": [
+      "1380000142068813954",
+      "1380000143042023505",
+      "1380000143847456869",
+      "1380591105057357945",
+      "1380000146485547049",
+      "1380000147626262569",
+      "1380000153137578065",
+      "1380612646650515526",
+      "1380000156883091486",
+      "1380000157772419092",
+      "1380000158586110014",
+      "1380000159982948434",
+      "1380000161618460732",
+      "1380000162625359942",
+      "1380000163656892426",
+      "1380000164219064352",
+      "1380000165875945522",
+      "1380000167171719273",
+      "1380000168539197603",
+      "1380000169499557888"
+
+    ],
+    "embedTitle": "TEAMLISTE"
+
+  },
+
+
+
+
+"welcomeSystem": {
+    "enabled": true,
+    "channelId": "1380000260654628909",
+    "roleId": "1380000194422378528",
+    "embedTitle": "WILLKOMMEN",
+    "embedDescription": "Willkommen auf **Medusa Roleplay**, ${member} (#${memberCount})!\n\nBitte lies dir unser Regelwerk aufmerksam durch, um einen reibungslosen Start zu haben.\nBei Fragen oder Problemen steht dir unser Support jederzeit zur Verfügung.\n\nVielen Dank, dass du Teil unserer Community bist – wir wünschen dir viel Spaß auf dem Server!",
+    "embedimage": "https://cdn.discordapp.com/attachments/1282356111424356414/1380618813594276012/placeholder-banner.png?ex=684488f7&is=68433777&hm=a1d58dadfa7a0346befc71efc5cb3ca385da0a434166d4147b14b0574076717a&"
+},
+
+"boostSystem": {
+    "enabled": true,
+    "channelId": "1380000265649782918",
+    "embedTitle": "BOOST",
+    "embedDescription": "**${user}** hat den Server geboostet!\n\nVielen Dank für deine Unterstützung!\n\nAktuelle Boosts: ${boostCount}\nBoost-Level: ${boostLevel}",
+    "embedimage": "https://cdn.discordapp.com/attachments/1282356111424356414/1380618813594276012/placeholder-banner.png?ex=684488f7&is=68433777&hm=a1d58dadfa7a0346befc71efc5cb3ca385da0a434166d4147b14b0574076717a&"
+},
+
+
+
+  "verifySystem": {
+    "enabled": true,
+    "verifiedRoleId": "1380000195470950462",
+    "blacklistedServerIds": ["12121212", "12121221"],
+    "logChannelId": "1380618361796431972",
+    "minAccountAgeDays": 7,
+    "buttonLabel": "Klick hier",
+    "embed": {
+      "title": "VERIFIZIERUNG",
+      "description": "Klicke auf **Klick hier** um dich zu verifizieren.",
+      "image": "https://cdn.discordapp.com/attachments/1282356111424356414/1380618813594276012/placeholder-banner.png?ex=684488f7&is=68433777&hm=a1d58dadfa7a0346befc71efc5cb3ca385da0a434166d4147b14b0574076717a&"
+    }
+  }
+}

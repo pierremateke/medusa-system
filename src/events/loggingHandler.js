@@ -106,6 +106,29 @@ module.exports = (client) => {
         sendLog(channel.guild, "Channel Delete - Logging", description, config.embedSettings.errorColor, null, channeldeletelogging);
     });
 
+
+        client.on(Events.ChannelCreate, async (channel) => {
+        const fetchedLogs = await channel.guild.fetchAuditLogs({
+            limit: 1,
+            type: AuditLogEvent.ChannelCreate,
+        });
+
+        const channelCreationLog = fetchedLogs.entries.first();
+
+        let executor = null;
+        if (channelCreationLog) {
+            executor = channelCreationLog.executor;
+        }
+
+        let description = '';
+        if (channel.type === 0) { // Textkanal
+            description = `Text Channel Edited <#${channel.id}> (${channel.id}) **edited** by ${executor ? `<@${executor.id}> (${executor.id})` : 'Unknown'}.`;
+        } else if (channel.type === 2) { // Sprachkanal
+            description = `Voice Channel Edited <#${channel.id}> (${channel.id}) **edited** by ${executor ? `<@${executor.id}> (${executor.id})` : 'Unknown'}.`;
+        }
+        sendLog(channel.guild, "Channel Edited - Logging", description, config.embedSettings.successColor, null, channelcreatelogging);
+    });
+
     // Role Logging
     client.on(Events.RoleCreate, async (role) => {
         try {

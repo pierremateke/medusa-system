@@ -18,7 +18,26 @@
     "footerIconURL": "https://cdn.discordapp.com/attachments/1282356111424356414/1315279689425752165/Logo_Animation_unter_10mb.gif"
   },
 
-
+  
+  "securitySystem": {
+    "enabled": true,
+    "blacklistedWords": [
+      "discord.gg/",
+      "http://",
+      "https://",
+      "porn",
+      "nsfw",
+      "fuck",
+      "shit",
+      "nigger",
+      "niga"
+    ],
+    "blockEveryonePing": true,
+    "blockInvisibleChars": true,
+    "spamThreshold": 5,
+    "spamInterval": 10000,
+    "logChannelId": "123456789012345678"
+  },
   
   "loggingSystem": {
     "enabled": true,

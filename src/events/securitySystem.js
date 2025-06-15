@@ -1,117 +1,85 @@
-const { Events, PermissionsBitField } = require("discord.js");
+const { Events, EmbedBuilder, PermissionsBitField } = require('discord.js');
+const config = require('../config.json');
 
-const BLACKLISTED_WORDS = [
-  "discord.gg/", "invite.me", "porn", "nsfw", "fuck", "shit", "nigger", "niga",
-  "http://", "https://", "twitch.tv/", "youtube.com/"
-];
-
-const SPAM_TRACKER = new Map();
-
-const MAX_MSG_PER_INTERVAL = 5;
-const SPAM_INTERVAL = 10000; // 10 Sekunden
-const MUTE_DURATION = 10 * 60 * 1000; // 10 Minuten
+const spamTracker = new Map();
 
 module.exports = {
-  name: Events.MessageCreate,
+    name: Events.MessageCreate,
 
-  async execute(message) {
-    if (
-      message.author.bot ||
-      !message.guild ||
-      message.member.permissions.has(PermissionsBitField.Flags.Administrator)
-    ) return;
+    async execute(message) {
+        const securityConfig = config.securitySystem;
 
-    const { content, member } = message;
-    const lower = content.toLowerCase();
+        if (!securityConfig.enabled || message.author.bot || !message.guild) return;
+        if (message.member.permissions.has(PermissionsBitField.Flags.Administrator)) return;
 
-    // ===== BLACKLISTED WORDS / ANTI-AD FILTER =====
-    if (BLACKLISTED_WORDS.some(word => lower.includes(word))) {
-      await message.delete().catch(() => {});
-      await warnOrMute(member, message, "Blacklisted word or ad detected.");
-      return;
-    }
+        const content = message.content.toLowerCase();
+        const userId = message.author.id;
+        const now = Date.now();
 
-    // ===== ANTI-EVERYONE / HERE SPAM =====
-    if (message.mentions.everyone) {
-      await message.delete().catch(() => {});
-      await warnOrMute(member, message, "Mass ping detected.");
-      return;
-    }
+        // === Anti-Blacklisted Words / Ads ===
+        if (securityConfig.blacklistedWords.some(word => content.includes(word))) {
+            await handleViolation(message, 'Blacklisted word or advertisement detected.');
+            return;
+        }
 
-    // ===== ANTI-UNICODE SPAM / INVISIBLE CHARACTERS =====
-    const invisibleChars = /[\u200B-\u200D\uFEFF]/;
-    if (invisibleChars.test(content)) {
-      await message.delete().catch(() => {});
-      await warnOrMute(member, message, "Invisible character spam.");
-      return;
-    }
+        // === Anti @everyone/@here ===
+        if (securityConfig.blockEveryonePing && message.mentions.everyone) {
+            await handleViolation(message, '@everyone/@here spam detected.');
+            return;
+        }
 
-    // ===== SPAM TRACKING =====
-    const userId = message.author.id;
-    const now = Date.now();
-    if (!SPAM_TRACKER.has(userId)) {
-      SPAM_TRACKER.set(userId, []);
-    }
+        // === Anti Invisible Characters ===
+        if (securityConfig.blockInvisibleChars && /[\u200B-\u200D\uFEFF]/.test(content)) {
+            await handleViolation(message, 'Invisible character spam.');
+            return;
+        }
 
-    const timestamps = SPAM_TRACKER.get(userId).filter(ts => now - ts < SPAM_INTERVAL);
-    timestamps.push(now);
-    SPAM_TRACKER.set(userId, timestamps);
+        // === Spam Protection ===
+        const timestamps = spamTracker.get(userId)?.filter(ts => now - ts < securityConfig.spamInterval) || [];
+        timestamps.push(now);
+        spamTracker.set(userId, timestamps);
 
-    if (timestamps.length >= MAX_MSG_PER_INTERVAL) {
-      await message.delete().catch(() => {});
-      await warnOrMute(member, message, "Spam detected.");
-      return;
-    }
-  }
+        if (timestamps.length >= securityConfig.spamThreshold) {
+            await handleViolation(message, 'Spam detected (too many messages).');
+            return;
+        }
+    },
 };
 
-// ===== WARN / MUTE FUNCTION =====
-async function warnOrMute(member, message, reason) {
-  const muteRole = message.guild.roles.cache.find(role =>
-    role.name.toLowerCase().includes("mute")
-  );
-
-  if (muteRole) {
-    await member.roles.add(muteRole, reason).catch(() => {});
-  } else {
-    // Create mute role if not exists
+async function handleViolation(message, reason) {
     try {
-      const newMuteRole = await message.guild.roles.create({
-        name: "Muted",
-        color: "Grey",
-        permissions: []
-      });
-      message.guild.channels.cache.forEach(channel => {
-        channel.permissionOverwrites.create(newMuteRole, {
-          SendMessages: false,
-          AddReactions: false,
-          Speak: false
-        });
-      });
-      await member.roles.add(newMuteRole, reason);
-    } catch (e) {
-      console.error("Fehler beim Erstellen der Mute-Rolle:", e);
+        await message.delete().catch(() => {});
+
+        const member = message.member;
+        const securityConfig = config.securitySystem;
+
+        // Add mute role
+        const muteRole = message.guild.roles.cache.find(role => role.name.toLowerCase().includes('mute'));
+        if (muteRole) {
+            await member.roles.add(muteRole, reason).catch(() => {});
+        }
+
+        // Log the action
+        const logChannel = message.guild.channels.cache.get(securityConfig.logChannelId);
+        if (logChannel) {
+            const embed = new EmbedBuilder()
+                .setColor(config.embedSettings.mainColor || 0xff0000)
+                .setTitle('SECURTIY')
+                .setDescription(`**User:** ${member}\n**Grund:** ${reason}`)
+                .setFooter({ text: config.embedSettings.footerText, iconURL: config.embedSettings.footerIconURL })
+                .setTimestamp();
+
+            await logChannel.send({ embeds: [embed] });
+        }
+
+        // DM the user
+        try {
+            await member.send(`⚠️ Du wurdest in **${message.guild.name}** gemuted. Grund: ${reason}`);
+        } catch {
+            console.log('Konnte Benutzer keine DM senden.');
+        }
+
+    } catch (err) {
+        console.error('Fehler beim Behandeln eines Verstoßes:', err);
     }
-  }
-
-  const logChannel = message.guild.channels.cache.find(ch =>
-    ch.name.toLowerCase().includes("modlog")
-  );
-
-  if (logChannel) {
-    logChannel.send({
-      embeds: [{
-        title: "🔒 Sicherheitsaktion",
-        description: `**User:** ${member}\n**Grund:** ${reason}`,
-        color: 0xff0000,
-        timestamp: new Date()
-      }]
-    }).catch(() => {});
-  }
-
-  try {
-    await member.send(`⚠️ Du wurdest in **${message.guild.name}** gemuted. Grund: ${reason}`);
-  } catch (err) {
-    console.log("Konnte DM nicht senden.");
-  }
 }

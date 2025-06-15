@@ -63,11 +63,11 @@ async function handleViolation(message, reason) {
         const logChannel = message.guild.channels.cache.get(securityConfig.logChannelId);
         if (logChannel) {
             const embed = new EmbedBuilder()
-                .setColor(config.embedSettings.mainColor || 0xff0000)
+                .setColor(config.embedSettings.mainColor)
                 .setTitle('SECURTIY')
                 .setDescription(`**User:** ${member}\n**Grund:** ${reason}`)
-                    .setAuthor({ name: config.embedSettings.authorName, iconURL: config.embedSettings.authorIconURL })
-                    .setFooter({ text: config.embedSettings.footerText, iconURL: config.embedSettings.footerIconURL });
+                .setAuthor({ name: config.embedSettings.authorName, iconURL: config.embedSettings.authorIconURL })
+                .setFooter({ text: config.embedSettings.footerText, iconURL: config.embedSettings.footerIconURL });
 
             await logChannel.send({ embeds: [embed] });
         }

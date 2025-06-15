@@ -66,15 +66,15 @@ async function handleViolation(message, reason) {
                 .setColor(config.embedSettings.mainColor || 0xff0000)
                 .setTitle('SECURTIY')
                 .setDescription(`**User:** ${member}\n**Grund:** ${reason}`)
-                .setFooter({ text: config.embedSettings.footerText, iconURL: config.embedSettings.footerIconURL })
-                .setTimestamp();
+                    .setAuthor({ name: config.embedSettings.authorName, iconURL: config.embedSettings.authorIconURL })
+                    .setFooter({ text: config.embedSettings.footerText, iconURL: config.embedSettings.footerIconURL });
 
             await logChannel.send({ embeds: [embed] });
         }
 
         // DM the user
         try {
-            await member.send(`⚠️ Du wurdest in **${message.guild.name}** gemuted. Grund: ${reason}`);
+            await member.send(`Du wurdest in **${message.guild.name}** gemuted. Grund: ${reason}`);
         } catch {
             console.log('Konnte Benutzer keine DM senden.');
         }

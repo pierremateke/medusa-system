@@ -18,7 +18,7 @@
     "footerIconURL": "https://cdn.discordapp.com/attachments/1282356111424356414/1315279689425752165/Logo_Animation_unter_10mb.gif"
   },
 
-  
+
   "securitySystem": {
     "enabled": true,
     "blacklistedWords": [
@@ -36,7 +36,7 @@
     "blockInvisibleChars": true,
     "spamThreshold": 5,
     "spamInterval": 10000,
-    "logChannelId": "123456789012345678"
+    "logChannelId": "1383866662024904855"
   },
   
   "loggingSystem": {
@@ -44,16 +44,16 @@
     "clearlogging": "1381614771006214155",
     "joinlogging": "1381633220407464050",
     "leavelogging": "1381633220407464050",
-    "channelcreatelogging": "1381628697483804712",
-    "channeldeletelogging": "1381628697483804712",
-    "rolecreatelogging": "1381628697483804712",
-    "roledeletelogging": "1381628697483804712",
-    "roleupdatelogging": "1381628697483804712",
+    "channelcreatelogging": "1383867529687994540",
+    "channeldeletelogging": "1383867529687994540",
+    "rolecreatelogging": "1383867548436529322",
+    "roledeletelogging": "1383867548436529322",
+    "roleupdatelogging": "1383867548436529322",
     "guildbanaddlogging": "1381628697483804712",
     "guildbanremovelogging": "1381628697483804712",
     "guildmemberupdatelogging": "1381628697483804712",
-    "messageupdatelogging": "1381628697483804712",
-    "messagedeletelogging": "1381628697483804712"
+    "messageupdatelogging": "1383867570922459159",
+    "messagedeletelogging": "1383867570922459159"
   },
 
 

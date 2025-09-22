@@ -1,13 +1,10 @@
 const { REST, Routes } = require('discord.js');
 const fs = require('fs');
-const config = require('../config.json'); // Import config
+const config = require('../config.json'); 
 const { logSuccess, logError, logWarning, logInfo } = require('../utils/logger');
-
 module.exports = async function (client) {
     const commands = [];
     const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'));
-
-    // Load all commands from the commands folder
     for (const file of commandFiles) {
         try {
             const command = require(`../commands/${file}`);
@@ -21,41 +18,33 @@ module.exports = async function (client) {
             logError(`Failed to load command file "${file}": ${error.message}`);
         }
     }
-
-    const rest = new REST({ version: '10' }).setToken(config.bot.token); // Use token from config
-
+    const rest = new REST({ version: '10' }).setToken(config.bot.token); 
     try {
         logInfo('Started refreshing application (/) commands.');
-
-        // Fetch existing commands
-        const existingCommands = config.bot.guildId // Use guildId from config
-            ? await rest.get(Routes.applicationGuildCommands(config.bot.clientId, config.bot.guildId)) // Use clientId and guildId from config
-            : await rest.get(Routes.applicationCommands(config.bot.clientId)); // Use clientId from config
-
-        // Delete old commands that are not in the current commands list
+        const existingCommands = config.bot.guildId 
+            ? await rest.get(Routes.applicationGuildCommands(config.bot.clientId, config.bot.guildId)) 
+            : await rest.get(Routes.applicationCommands(config.bot.clientId)); 
         for (const command of existingCommands) {
             const isActiveCommand = commands.find(cmd => cmd.name === command.name);
             if (!isActiveCommand) {
                 logWarning(`Deleting old command: ${command.name}`);
-                if (config.bot.guildId) { // Use guildId from config
-                    await rest.delete(Routes.applicationGuildCommand(config.bot.clientId, config.bot.guildId, command.id)); // Use clientId and guildId from config
+                if (config.bot.guildId) { 
+                    await rest.delete(Routes.applicationGuildCommand(config.bot.clientId, config.bot.guildId, command.id)); 
                 } else {
-                    await rest.delete(Routes.applicationCommand(config.bot.clientId, command.id)); // Use clientId from config
+                    await rest.delete(Routes.applicationCommand(config.bot.clientId, command.id)); 
                 }
                 logSuccess(`Deleted old command: ${command.name}`);
             }
         }
-
-        // Register new or updated commands
-        if (config.bot.guildId) { // Use guildId from config
+        if (config.bot.guildId) { 
             await rest.put(
-                Routes.applicationGuildCommands(config.bot.clientId, config.bot.guildId), // Use clientId and guildId from config
+                Routes.applicationGuildCommands(config.bot.clientId, config.bot.guildId), 
                 { body: commands }
             );
             logSuccess('Successfully registered application (/) commands for the guild.');
         } else {
             await rest.put(
-                Routes.applicationCommands(config.bot.clientId), // Use clientId from config
+                Routes.applicationCommands(config.bot.clientId), 
                 { body: commands }
             );
             logSuccess('Successfully registered global application (/) commands.');

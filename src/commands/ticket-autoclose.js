@@ -2,10 +2,8 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const supportRoles = [
     '1380000179792380049'
 ];
-
 const scheduledCloses = new Map();
 const LOG_CHANNEL_ID = '1380000255176736849';
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('ticket-autoclose')
@@ -22,15 +20,11 @@ module.exports = {
         if (!member.roles.cache.some(r => supportRoles.includes(r.id))) {
             return interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
         }
-
         const hours = interaction.options.getInteger('hours');
         const channel = interaction.channel;
-
-        // Check if this is a ticket channel (e.g. topic is userId or some ticket marker)
         if (!channel.topic || isNaN(channel.topic)) {
             console.error(`[ticket-autoclose] This channel is not a Ticket: ${channel.id} (${channel.name})`);
             await interaction.reply({ content: 'This channel is not a Ticket', ephemeral: true });
-            // Logging
             try {
                 const logChannel = await interaction.guild.channels.fetch(LOG_CHANNEL_ID);
                 if (logChannel) {
@@ -48,14 +42,10 @@ module.exports = {
             } catch {}
             return;
         }
-
-        // Cancel any existing scheduled close for this channel
         if (scheduledCloses.has(channel.id)) {
             clearTimeout(scheduledCloses.get(channel.id));
             scheduledCloses.delete(channel.id);
         }
-
-        // Listen for any new messages to cancel autoclose
         const messageCollector = channel.createMessageCollector({ time: hours * 60 * 60 * 1000 });
         messageCollector.on('collect', msg => {
             if (!msg.author.bot) {
@@ -73,7 +63,6 @@ module.exports = {
                                 .setFooter({ text: config.embedSettings.footerText, iconURL: config.embedSettings.footerIconURL })
                         ]
                     });
-                    // Logging
                     interaction.guild.channels.fetch(LOG_CHANNEL_ID).then(logChannel => {
                         if (logChannel) {
                             const logEmbed = new EmbedBuilder()
@@ -91,8 +80,6 @@ module.exports = {
                 }
             }
         });
-
-        // Schedule the close
         const ms = hours * 60 * 60 * 1000;
         const timeout = setTimeout(async () => {
             try {
@@ -104,7 +91,6 @@ module.exports = {
                 };
                 const ticketSystem = require('../events/ticketSystem');
                 await ticketSystem.handleCloseConfirmation(fakeInteraction);
-                // Logging
                 interaction.guild.channels.fetch(LOG_CHANNEL_ID).then(logChannel => {
                     if (logChannel) {
                         const logEmbed = new EmbedBuilder()
@@ -131,7 +117,6 @@ module.exports = {
                             .setFooter({ text: config.embedSettings.footerText, iconURL: config.embedSettings.footerIconURL })
                     ]
                 });
-                // Logging
                 interaction.guild.channels.fetch(LOG_CHANNEL_ID).then(logChannel => {
                     if (logChannel) {
                         const logEmbed = new EmbedBuilder()
@@ -150,13 +135,8 @@ module.exports = {
             scheduledCloses.delete(channel.id);
             messageCollector.stop();
         }, ms);
-
         scheduledCloses.set(channel.id, timeout);
-
-        // Find the ticket creator (from channel.topic)
         let creatorMention = `<@${channel.topic}>`;
-
-        // Find the first message (the ticket embed) and reply to it
         let ticketMsg;
         try {
             const messages = await channel.messages.fetch({ limit: 10 });
@@ -168,26 +148,21 @@ module.exports = {
         } catch {
             ticketMsg = null;
         }
-
         const embed = new EmbedBuilder()
             .setColor(config.embedSettings.mainColor)
             .setTitle('Ticketsystem - Autoclose')
             .setDescription(`This ticket will be automatically closed in **${hours} hour(s)** unless closed manually.\n\n**To cancel:** Just send any message in this ticket!`)
             .setAuthor({ name: config.embedSettings.authorName, iconURL: config.embedSettings.authorIconURL })
             .setFooter({ text: config.embedSettings.footerText, iconURL: config.embedSettings.footerIconURL });
-
         if (ticketMsg) {
             await ticketMsg.reply({ content: creatorMention, embeds: [embed] });
         } else {
             await channel.send({ content: creatorMention, embeds: [embed] });
         }
-
         await interaction.reply({
             content: `AutoClose is now active for this ticket.`,
             ephemeral: true
         });
-
-        // Logging
         try {
             const logChannel = await interaction.guild.channels.fetch(LOG_CHANNEL_ID);
             if (logChannel) {

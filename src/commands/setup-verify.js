@@ -2,7 +2,6 @@ const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder, Perm
 const fs = require('fs');
 const path = require('path');
 const config = require('../config.json');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('setup-verify')
@@ -19,15 +18,12 @@ module.exports = {
             const targetChannel = interaction.options.getChannel('channel');
             const verifyConfig = config.verifySystem;
             const embedConfig = verifyConfig.embed;
-
             if (!targetChannel) {
                 return interaction.reply({
                     content: 'Der angegebene Kanal wurde nicht gefunden.',
                     ephemeral: true,
                 });
             }
-
-            // Überprüfe, ob der Bot die Berechtigung hat, Nachrichten in den Zielkanal zu senden
             const botPermissions = targetChannel.permissionsFor(interaction.guild.members.me);
             if (!botPermissions || !botPermissions.has('SendMessages')) {
                 return interaction.reply({
@@ -35,17 +31,12 @@ module.exports = {
                     ephemeral: true,
                 });
             }
-
-            // Pfad zur verifyData.json
             const dataPath = path.join(__dirname, '../database/verifyData.json');
             let verifyCount = 0;
-
-            // Verifizierungsdaten aus der Datei lesen
             if (fs.existsSync(dataPath)) {
                 const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
                 verifyCount = data.verifications || 0;
             }
-
             const embed = new EmbedBuilder()
                 .setColor(config.embedSettings.mainColor)
                 .setTitle(embedConfig.title)
@@ -53,20 +44,16 @@ module.exports = {
                 .setImage(embedConfig.image)
                 .setAuthor({ name: config.embedSettings.authorName, iconURL: config.embedSettings.authorIconURL })
                 .setFooter({ text: config.embedSettings.footerText, iconURL: config.embedSettings.footerIconURL });
-
             const verifyButton = new ButtonBuilder()
                 .setCustomId('verify_button')
                 .setLabel(verifyConfig.buttonLabel)
                 .setStyle('Success');
-
             const countButton = new ButtonBuilder()
                 .setCustomId('verify_count')
                 .setLabel(`${verifyCount}`)
                 .setStyle('Secondary')
                 .setDisabled(true);
-
             const row = new ActionRowBuilder().addComponents(verifyButton, countButton);
-
             try {
                 await targetChannel.send({ embeds: [embed], components: [row] });
             } catch (error) {
@@ -76,7 +63,6 @@ module.exports = {
                     ephemeral: true,
                 });
             }
-
             await interaction.reply({
                 content: `Das Verifizierungssystem wurde erfolgreich in <#${targetChannel.id}> eingerichtet.`,
                 ephemeral: true,

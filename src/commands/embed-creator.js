@@ -1,5 +1,4 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ChannelType } = require('discord.js');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('create-embed')
@@ -71,17 +70,15 @@ module.exports = {
                 .setDescription('Whether to include a timestamp in the embed (true/false).')
                 .setRequired(false)
         )
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator), // Nur Administratoren können den Befehl ausführen
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator), 
     async execute(interaction) {
         try {
-            // Überprüfen, ob der Benutzer Administrator-Berechtigungen hat
             if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
                 return interaction.reply({
                     content: 'You do not have permission to use this command. Administrator permissions are required.',
                     ephemeral: true,
                 });
             }
-
             const title = interaction.options.getString('title');
             let description = interaction.options.getString('description');
             const color = interaction.options.getString('color') || '#FFFFFF';
@@ -93,46 +90,35 @@ module.exports = {
             const thumbnail = interaction.options.getString('thumbnail');
             const targetChannel = interaction.options.getChannel('channel');
             const includeTimestamp = interaction.options.getBoolean('timestamp');
-
             if (!targetChannel || targetChannel.type !== ChannelType.GuildText) {
                 return interaction.reply({
                     content: 'The specified channel is invalid or not a text channel.',
                     ephemeral: true,
                 });
             }
-
-            // Ersetze Semikolon (;) durch Zeilenumbrüche (\n)
             description = description.replace(/;/g, '\n');
-
-            // Embed erstellen
             const embed = new EmbedBuilder()
                 .setTitle(title)
                 .setDescription(description)
                 .setColor(color);
-
             if (footer) {
                 embed.setFooter({
                     text: footer,
                     iconURL: footerUrl || null,
                 });
             }
-
             if (author) {
                 embed.setAuthor({
                     name: author,
                     iconURL: authorUrl || null,
                 });
             }
-
             if (image) embed.setImage(image);
             if (thumbnail) embed.setThumbnail(thumbnail);
-
             if (includeTimestamp) {
                 embed.setTimestamp();
             }
-
             await targetChannel.send({ embeds: [embed] });
-
             await interaction.reply({
                 content: `Embed successfully sent to <#${targetChannel.id}>.`,
                 ephemeral: true,

@@ -2,27 +2,22 @@ const { Events, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, Chan
 const { createTranscript } = require('discord-html-transcripts');
 const config = require('../config.json');
 const ticketSystem = config.ticketSystem;
-
 function generateTicketId() {
     return '#' + Math.floor(100000 + Math.random() * 900000);
 }
-
 function fillPlaceholders(str, data) {
     if (typeof str !== 'string') return str;
     return str.replace(/{(\w+)}/g, (_, key) => data[key] ?? '');
 }
-
 function buildEmbed(embedConfig, data) {
     const embed = new EmbedBuilder()
         .setColor(config.embedSettings.mainColor);
-
     if (embedConfig && embedConfig.title) {
         embed.setTitle(fillPlaceholders(embedConfig.title, data));
     }
     if (embedConfig && embedConfig.description) {
         embed.setDescription(fillPlaceholders(embedConfig.description, data));
     }
-
     if (embedConfig && embedConfig.fields) {
         embedConfig.fields.forEach(f => {
             embed.addFields({
@@ -32,38 +27,31 @@ function buildEmbed(embedConfig, data) {
             });
         });
     }
-
     if (config.embedSettings && config.embedSettings.authorName) {
         embed.setAuthor({
             name: fillPlaceholders(config.embedSettings.authorName, data),
             iconURL: (config.embedSettings.authorIconURL) || null
         });
     }
-
     if (config.embedSettings && config.embedSettings.footerText) {
         embed.setFooter({
             text: fillPlaceholders(config.embedSettings.footerText, data),
             iconURL: (config.embedSettings.footerIconURL) || null
         });
     }
-
     if (embedConfig && embedConfig.image) {
         embed.setImage(fillPlaceholders(embedConfig.image, data));
     }
-
     if (embedConfig && embedConfig.thumbnail) {
         embed.setThumbnail(fillPlaceholders(embedConfig.thumbnail, data));
     }
-
     return embed;
 }
-
 module.exports = {
     name: Events.InteractionCreate,
     async execute(interaction) {
         try {
             if (!ticketSystem.enabled) return;
-
             if (interaction.isStringSelectMenu() && interaction.customId === 'ticket-category-select') {
                 if (interaction.replied || interaction.deferred) {
                     console.warn('The interaction has already been replied to or deferred.');
@@ -72,7 +60,6 @@ module.exports = {
                 await interaction.deferReply({ ephemeral: true });
                 await handleTicketCreation(interaction);
             }
-
             if (interaction.isButton()) {
                 switch (interaction.customId) {
                     case 'close-ticket':
@@ -120,35 +107,29 @@ module.exports = {
         }
     }
 };
-
 async function handleTicketCreation(interaction) {
     try {
         const category = interaction.values[0];
         const guild = interaction.guild;
         const member = interaction.member;
         const categoryData = ticketSystem.categories[category];
-
         if (!categoryData) {
             return interaction.followUp({
                 content: ticketSystem.texts.invalidCategory,
                 ephemeral: true,
             });
         }
-
         const ticketId = generateTicketId();
         const channelName = `ticket-${member.user.username.toLowerCase()}`;
-
         const existingChannel = guild.channels.cache.find(
             channel => channel.name.startsWith(`ticket-${member.user.username.toLowerCase()}`) && channel.type === ChannelType.GuildText && channel.topic && channel.topic.includes(member.id)
         );
-
         if (existingChannel) {
             return interaction.followUp({
                 content: `You already have a ticket: <#${existingChannel.id}>`,
                 ephemeral: true,
             });
         }
-
         const permissionOverwrites = [
             {
                 id: guild.roles.everyone.id,
@@ -159,14 +140,12 @@ async function handleTicketCreation(interaction) {
                 allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
             },
         ];
-
         categoryData.roles.forEach(roleId => {
             permissionOverwrites.push({
                 id: roleId,
                 allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles, PermissionFlagsBits.ManageChannels],
             });
         });
-
         const ticketChannel = await guild.channels.create({
             name: channelName,
             type: ChannelType.GuildText,
@@ -174,10 +153,7 @@ async function handleTicketCreation(interaction) {
             topic: `${member.id}|${ticketId}`,
             permissionOverwrites,
         });
-
         await ticketChannel.setRateLimitPerUser(5);
-
-        // Ticket Embed
         const embed = buildEmbed(
             ticketSystem.embeds.ticketCreate,
             {
@@ -187,23 +163,18 @@ async function handleTicketCreation(interaction) {
                 created: `<t:${Math.floor(Date.now() / 1000)}:R>`
             }
         );
-
         const closeButton = new ButtonBuilder()
             .setCustomId('close-ticket')
             .setLabel('Schließen')
             .setEmoji('🔒')
             .setStyle(ButtonStyle.Secondary);
-
         const row = new ActionRowBuilder().addComponents(closeButton);
-
         const welcomeMsg = await ticketChannel.send({
             content: `${member}`,
             embeds: [embed],
             components: [row]
         });
         await welcomeMsg.pin();
-
-        // Logging
         const logChannel = guild.channels.cache.get(ticketSystem.logChannelId);
         if (logChannel) {
             const logEmbed = buildEmbed(
@@ -219,7 +190,6 @@ async function handleTicketCreation(interaction) {
             );
             await logChannel.send({ embeds: [logEmbed] });
         }
-
         await interaction.followUp({
             content: ticketSystem.texts.ticketCreated.replace('{channelId}', ticketChannel.id),
             ephemeral: true,
@@ -232,13 +202,11 @@ async function handleTicketCreation(interaction) {
         });
     }
 }
-
 async function handleTicketClosure(interaction) {
     try {
         const channel = interaction.channel;
         const pinnedMessages = await channel.messages.fetchPinned();
         const ticketMessage = pinnedMessages.first();
-
         const confirmRow = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
                 .setCustomId('confirm-close')
@@ -249,7 +217,6 @@ async function handleTicketClosure(interaction) {
                 .setLabel('Abbrechen')
                 .setStyle(ButtonStyle.Secondary)
         );
-
         if (ticketMessage) {
             await ticketMessage.reply({
                 content: ticketSystem.texts.confirmClose,
@@ -261,7 +228,6 @@ async function handleTicketClosure(interaction) {
                 components: [confirmRow]
             });
         }
-
         await interaction.deferUpdate();
     } catch (error) {
         console.error('Failed to handle ticket closure:', error);
@@ -271,37 +237,28 @@ async function handleTicketClosure(interaction) {
         });
     }
 }
-
 async function handleCloseConfirmation(interaction) {
     try {
         const channel = interaction.channel;
         const guild = interaction.guild;
         const closer = interaction.member;
         const [creatorId, ticketId] = (channel.topic || '').split('|');
-
         await channel.permissionOverwrites.edit(creatorId, {
             ViewChannel: false
         });
-
         await channel.setName(`closed-${channel.name.replace('ticket-', '')}`);
-
-        // Transcript erstellen und im Log-Channel posten
         const transcript = await createTranscript(channel, {
             limit: -1,
             fileName: `${channel.name}-transcript.html`,
             poweredBy: false
         });
-
         const logChannel = guild.channels.cache.get(ticketSystem.logChannelId);
         if (logChannel) {
             try {
-                // Transcript zuerst posten
                 await logChannel.send({
                     content: `Transcript für Ticket ${ticketId || ''} (${channel.name}):`,
                     files: [transcript]
                 });
-
-                // Dann Logging-Embed posten
                 const logEmbed = buildEmbed(
                     ticketSystem.embeds.ticketLogClose,
                     {
@@ -316,8 +273,6 @@ async function handleCloseConfirmation(interaction) {
                 console.error('Failed to send log message:', logError);
             }
         }
-
-        // Ticket Controls im Ticket-Channel
         const closedEmbed = buildEmbed(
             ticketSystem.embeds.ticketClose,
             {
@@ -325,11 +280,9 @@ async function handleCloseConfirmation(interaction) {
                 ticketId: ticketId || '-'
             }
         );
-
         const controlsEmbed = new EmbedBuilder()
             .setColor(config.embedSettings.mainColor)
             .setDescription('```\nStaff Team Ticket Controls\n```');
-
         const controlButtons = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
                 .setCustomId('delete-ticket')
@@ -340,11 +293,8 @@ async function handleCloseConfirmation(interaction) {
                 .setLabel('Wieder öffnen')
                 .setStyle(ButtonStyle.Success)
         );
-
         await channel.send({ embeds: [closedEmbed] });
         await channel.send({ embeds: [controlsEmbed], components: [controlButtons] });
-
-        // Ticket-Ersteller per DM informieren
         try {
             const creator = await guild.members.fetch(creatorId);
             await creator.send({
@@ -359,9 +309,7 @@ async function handleCloseConfirmation(interaction) {
                 ]
             });
         } catch (error) {
-            // DM konnte nicht gesendet werden
         }
-
         await interaction.deferUpdate();
     } catch (error) {
         console.error('Failed to handle close confirmation:', error);
@@ -371,10 +319,8 @@ async function handleCloseConfirmation(interaction) {
         });
     }
 }
-
 async function handleTicketDelete(interaction) {
     try {
-        // Permission check (hier: Support-Rolle)
         if (!interaction.member.roles.cache.some(role =>
             ticketSystem.categories.support.roles.includes(role.id))) {
             return interaction.reply({
@@ -382,7 +328,6 @@ async function handleTicketDelete(interaction) {
                 ephemeral: true
             });
         }
-
         const channel = interaction.channel;
         const guild = interaction.guild;
         const logChannel = guild.channels.cache.get(ticketSystem.logChannelId);
@@ -398,7 +343,6 @@ async function handleTicketDelete(interaction) {
             );
             await logChannel.send({ embeds: [logEmbed] });
         }
-
         if (interaction.replied || interaction.deferred) {
             console.warn('The interaction has already been replied to or deferred.');
             return;
@@ -415,7 +359,6 @@ async function handleTicketDelete(interaction) {
         }
     }
 }
-
 async function handleTicketReopen(interaction) {
     try {
         const channel = interaction.channel;
@@ -426,13 +369,11 @@ async function handleTicketReopen(interaction) {
             SendMessages: true
         });
         await channel.setName(channel.name.replace('closed-', 'ticket-'));
-
         if (interaction.replied || interaction.deferred) {
             console.warn('The interaction has already been replied to or deferred.');
             return;
         }
         await interaction.reply({ content: ticketSystem.texts.ticketReopened, ephemeral: true });
-
         const logChannel = guild.channels.cache.get(ticketSystem.logChannelId);
         if (logChannel) {
             const logEmbed = buildEmbed(

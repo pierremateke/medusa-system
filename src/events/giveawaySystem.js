@@ -3,27 +3,21 @@ const fs = require('fs');
 const path = require('path');
 const ms = require('ms');
 const config = require('../config.json');
-
 const giveawaysPath = path.join(__dirname, '../database/giveawayData.json');
-
 function readGiveaways() {
     if (!fs.existsSync(giveawaysPath)) {
         fs.writeFileSync(giveawaysPath, JSON.stringify([]));
     }
     return JSON.parse(fs.readFileSync(giveawaysPath, 'utf8'));
 }
-
 function saveGiveaways(data) {
     fs.writeFileSync(giveawaysPath, JSON.stringify(data, null, 2));
 }
-
 async function handleGiveawayJoin(interaction, giveaway) {
     if (!interaction.isButton()) return;
     if (interaction.customId !== `giveaway_join_${giveaway.id}`) return;
-
     const userId = interaction.user.id;
     const giveawayId = giveaway.id.slice(0, 8);
-
     if (giveaway.participants.includes(userId)) {
         giveaway.participants = giveaway.participants.filter(id => id !== userId);
         await interaction.reply({ content: `Du hast das Giveaway \`#${giveawayId}\` **verlassen**`, ephemeral: true });
@@ -31,8 +25,6 @@ async function handleGiveawayJoin(interaction, giveaway) {
         giveaway.participants.push(userId);
         await interaction.reply({ content: `Du bist dem Giveaway \`#${giveawayId}\` **beigetreten**`, ephemeral: true });
     }
-
-    // Add a role to the user upon joining (optional)
     if (config.giveawaySettings && config.giveawaySettings.joinRole) {
         try {
             const role = await interaction.guild.roles.fetch(config.giveawaySettings.joinRole);
@@ -46,59 +38,46 @@ async function handleGiveawayJoin(interaction, giveaway) {
             console.error("Failed to add role:", error);
         }
     }
-
-    return true; // Signal, dass Änderungen vorgenommen wurden
+    return true; 
 }
-
 async function updateGiveawayEmbed(client, giveaway) {
     try {
         const channel = await client.channels.fetch(giveaway.channelId);
         if (!channel) return console.log(`Channel not found: ${giveaway.channelId}`);
-
         const message = await channel.messages.fetch(giveaway.messageId);
         if (!message) return console.log(`Message not found: ${giveaway.messageId}`);
-
         const embed = EmbedBuilder.from(message.embeds[0]);
-
         const joinButton = new ButtonBuilder()
             .setCustomId(`giveaway_join_${giveaway.id}`)
             .setLabel('🎉')
             .setStyle(ButtonStyle.Success);
-
         const participantsButton = new ButtonBuilder()
             .setCustomId('participants_count')
             .setLabel(`${giveaway.participants.length}`)
             .setStyle(ButtonStyle.Secondary)
             .setDisabled(true);
-
         const row = new ActionRowBuilder()
             .addComponents(joinButton, participantsButton);
-
         await message.edit({ embeds: [embed], components: [row] });
     } catch (error) {
         console.error('Failed to update giveaway embed:', error);
     }
 }
-
 async function checkGiveaways(client) {
     let giveaways = readGiveaways();
     let changed = false;
-
     for (const giveaway of giveaways.filter(g => !g.ended && g.endTime <= Date.now())) {
         giveaway.ended = true;
         changed = true;
-
         const channel = await client.channels.fetch(giveaway.channelId).catch(() => null);
         if (!channel) continue;
-
         let winner = null;
         if (giveaway.participants.length > 0) {
             const winnerIndex = Math.floor(Math.random() * giveaway.participants.length);
             winner = giveaway.participants[winnerIndex];
         }
-
         const embed = new EmbedBuilder()
-            .setColor('#FF0000') // Red color for ended giveaway
+            .setColor('#FF0000') 
             .setTitle(`GIVEAWAY \`#${giveaway.id.slice(0, 8)}\` (Beendet)`)
             .setDescription(
                 `**Preis:** ${giveaway.preis}\n` +
@@ -108,23 +87,19 @@ async function checkGiveaways(client) {
             .setAuthor({ name: config.embedSettings.authorName, iconURL: config.embedSettings.authorIconURL })
             .setFooter({ text: config.embedSettings.footerText, iconURL: config.embedSettings.footerIconURL })
             .setTimestamp();
-
         try {
             const msg = await channel.messages.fetch(giveaway.messageId).catch(() => null);
             if (msg) {
-                await msg.edit({ embeds: [embed], components: [] }); // Remove buttons
+                await msg.edit({ embeds: [embed], components: [] }); 
             }
         } catch (error) {
             console.error("Failed to edit giveaway message:", error);
         }
-
         if (winner) {
             await channel.send({ content: `Glückwunsch <@${winner}>, du hast das Giveaway \`${giveaway.id.slice(0, 8)}\` gewonnen!` });
         } else {
             await channel.send({ content: `Das Giveaway \`${giveaway.id.slice(0, 8)}\` ist beendet, aber es gab keine Teilnehmer.` });
         }
-
-        // Remove role from participants after the giveaway ends (optional)
         if (config.giveawaySettings && config.giveawaySettings.joinRole) {
             try {
                 const role = await channel.guild.roles.fetch(config.giveawaySettings.joinRole);
@@ -144,17 +119,14 @@ async function checkGiveaways(client) {
             }
         }
     }
-
     if (changed) saveGiveaways(giveaways);
 }
-
 async function createGiveaway(interaction, zeit, preis, anzahl, beschreibung, regeln) {
     const endTime = Date.now() + ms(zeit);
     if (isNaN(endTime)) {
         await interaction.reply({ content: 'Ungültige Zeitangabe.', ephemeral: true });
         return;
     }
-
     const giveaway = {
         id: Date.now().toString(),
         channelId: interaction.channelId,
@@ -168,11 +140,9 @@ async function createGiveaway(interaction, zeit, preis, anzahl, beschreibung, re
         ended: false,
         hostedBy: interaction.user.id
     };
-
     let giveaways = readGiveaways();
     giveaways.push(giveaway);
     saveGiveaways(giveaways);
-
     const embed = new EmbedBuilder()
         .setColor(config.embedSettings.mainColor)
         .setTitle(`GIVEAWAY (\`#${giveaway.id.slice(0, 8)}\`)`)
@@ -186,37 +156,28 @@ async function createGiveaway(interaction, zeit, preis, anzahl, beschreibung, re
         .setAuthor({ name: config.embedSettings.authorName, iconURL: config.embedSettings.authorIconURL })
         .setFooter({ text: config.embedSettings.footerText, iconURL: config.embedSettings.footerIconURL })
         .setTimestamp();
-
     const joinButton = new ButtonBuilder()
         .setCustomId(`giveaway_join_${giveaway.id}`)
         .setLabel('🎉')
         .setStyle(ButtonStyle.Success);
-
     const participantsButton = new ButtonBuilder()
         .setCustomId('participants_count')
         .setLabel(`0`)
         .setStyle(ButtonStyle.Secondary)
         .setDisabled(true);
-
     const row = new ActionRowBuilder()
         .addComponents(joinButton, participantsButton);
-
     const msg = await interaction.channel.send({ embeds: [embed], components: [row] });
-
     giveaway.messageId = msg.id;
     saveGiveaways(giveaways);
-
     await interaction.reply({ content: `Giveaway gestartet!`, ephemeral: true });
 }
-
 module.exports = {
     name: Events.InteractionCreate,
     async execute(interaction) {
         let giveaways = readGiveaways();
         let changed = false;
-
         if (interaction.isCommand()) return;
-
         for (const giveaway of giveaways) {
             if (!giveaway.ended) {
                 const joinResult = await handleGiveawayJoin(interaction, giveaway);
@@ -226,7 +187,6 @@ module.exports = {
                 }
             }
         }
-
         if (changed) {
             saveGiveaways(giveaways);
         }

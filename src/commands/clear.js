@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
-const config = require('../config.json'); // Importiere die config.json-Datei
+const config = require('../config.json');
 const fs = require('fs');
 const path = require('path');
 
@@ -67,7 +67,7 @@ module.exports = {
                 files: [logFilePath],
             });
 
-            fs.unlinkSync(logFilePath); // Lösche die Datei nach dem Senden
+            fs.unlinkSync(logFilePath);
 
             await interaction.reply({
                 content: `Successfully deleted **${deletedMessages.size} messages**.`,

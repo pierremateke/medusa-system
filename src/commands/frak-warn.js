@@ -1,9 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const config = require('../config.json');
-
-const ADMIN_ROLE_ID = '1380000149371359254'; // Ersetze durch die ID der Admin-Rolle
-const LOG_CHANNEL_ID = '1380000306859085845'; // Ersetze durch die ID des Log-Kanals
-
+const ADMIN_ROLE_ID = '1380000149371359254'; 
+const LOG_CHANNEL_ID = '1380000306859085845'; 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('frak-warn')
@@ -30,18 +28,14 @@ module.exports = {
             if (!interaction.member.roles.cache.has(ADMIN_ROLE_ID)) {
                 return await interaction.reply({ content: 'Du hast keine Berechtigung, diesen Befehl auszuführen.', ephemeral: true });
             }
-
             const fraktion = interaction.options.getString('fraktion');
             const warnstufe = interaction.options.getInteger('warnstufe');
             const reason = interaction.options.getString('grund');
             const logChannel = interaction.guild.channels.cache.get(LOG_CHANNEL_ID);
-
             if (!logChannel) {
                 return await interaction.reply({ content: 'Der Log-Kanal konnte nicht gefunden werden.', ephemeral: true });
             }
-
             const nowUnix = Math.floor(Date.now() / 1000);
-
             const embed = new EmbedBuilder()
                 .setColor(config.embedSettings.warningColor)
                 .setTitle('VERWARNUNG')
@@ -54,9 +48,7 @@ module.exports = {
                 )
                 .setAuthor({ name: config.embedSettings.authorName, iconURL: config.embedSettings.authorIconURL })
                 .setFooter({ text: config.embedSettings.footerText, iconURL: config.embedSettings.footerIconURL });
-
             await logChannel.send({ embeds: [embed] });
-
             await interaction.reply({ content: 'Die Verwarnung wurde erfolgreich verkündet.', ephemeral: true });
         } catch (error) {
             console.error('Fehler beim Ausführen des Befehls:', error);

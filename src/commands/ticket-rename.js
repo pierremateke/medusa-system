@@ -1,10 +1,9 @@
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
-const config = require('../config.json'); // Importiere die Konfigurationsdatei
+const config = require('../config.json'); 
 const supportRoles = [
     '1380000179792380049'
 ];
 const LOG_CHANNEL_ID = '1380000255176736849';
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('ticket-rename')
@@ -19,26 +18,19 @@ module.exports = {
         if (!member.roles.cache.some(r => supportRoles.includes(r.id))) {
             return interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
         }
-
         const newName = interaction.options.getString('name');
         await interaction.channel.setName(newName);
-
         const embed = new EmbedBuilder()
             .setColor(config.embedSettings.mainColor)
             .setDescription(`\`\`\`\nTicket renamed to: ${newName}\n\`\`\``);
-
         const pinned = await interaction.channel.messages.fetchPinned();
         const ticketMsg = pinned.first();
-
         if (ticketMsg) {
             await ticketMsg.reply({ embeds: [embed] });
         } else {
             await interaction.channel.send({ embeds: [embed] });
         }
-
         await interaction.reply({ content: 'Done', ephemeral: true });
-
-        // Logging
         try {
             const logChannel = await interaction.guild.channels.fetch(LOG_CHANNEL_ID);
             if (logChannel) {
@@ -53,7 +45,7 @@ module.exports = {
                     .setFooter({ text: config.embedSettings.footerText, iconURL: config.embedSettings.footerIconURL });
                 await logChannel.send({ embeds: [logEmbed] });
             }
-        } catch (error) { // Füge eine Fehlerbehandlung hinzu
+        } catch (error) { 
             console.error('Fehler beim Senden der Log-Nachricht:', error);
         }
     }

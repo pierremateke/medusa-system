@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
 const config = require('../config.json');
 const ticketSystem = config.ticketSystem;
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('setup-ticket')
@@ -16,34 +15,26 @@ module.exports = {
     async execute(interaction) {
         try {
             const targetChannel = interaction.options.getChannel('channel');
-
             if (!targetChannel) {
                 return interaction.reply({
                     content: 'Der angegebene Kanal wurde nicht gefunden.',
                     ephemeral: true,
                 });
             }
-
-            // Antwort auf die Interaktion sofort, um das Zeitlimit zu vermeiden
             await interaction.deferReply({ ephemeral: true });
-
-            // Funktion zum Aktualisieren des Embeds
             const updateEmbed = async () => {
                 let categoryLoads = '';
                 if (ticketSystem.showLoad) {
                     for (const categoryKey in ticketSystem.categories) {
                         const category = ticketSystem.categories[categoryKey];
                         const ticketCount = targetChannel.guild.channels.cache.filter(c => c.parentId === category.id && c.name.startsWith('ticket-')).size;
-
                         let loadStatus = ticketSystem.loadEmojis.green;
                         if (ticketCount > 10) loadStatus = ticketSystem.loadEmojis.yellow;
                         if (ticketCount > 15) loadStatus = ticketSystem.loadEmojis.orange;
                         if (ticketCount > 25) loadStatus = ticketSystem.loadEmojis.red;
-
                         categoryLoads += `\n- ${category.label}: ${loadStatus}`;
                     }
                 }
-
                 const embedData = ticketSystem.embeds.setup;
                 const embed = new EmbedBuilder()
                     .setColor(config.embedSettings.mainColor)
@@ -53,7 +44,6 @@ module.exports = {
                     .setFooter({ text: config.embedSettings.footerText, iconURL: config.embedSettings.footerIconURL })
                     .setImage(embedData.image)
                     .setThumbnail(embedData.thumbnail);
-
                 const selectMenu = new ActionRowBuilder()
                     .addComponents(
                         new StringSelectMenuBuilder()
@@ -67,12 +57,9 @@ module.exports = {
                                 }))
                             )
                     );
-
-                // Suche nach der vorherigen Nachricht des Bots
                 try {
                     const fetchedMessages = await targetChannel.messages.fetch({ limit: 100 });
                     const botMessage = fetchedMessages.find(msg => msg.author.id === interaction.client.user.id && msg.embeds.length > 0);
-
                     if (botMessage) {
                         await botMessage.edit({ embeds: [embed], components: [selectMenu] });
                     } else {
@@ -82,12 +69,8 @@ module.exports = {
                     console.error(`Fehler beim Abrufen oder Senden von Nachrichten: ${error}`);
                 }
             };
-
-            // Starte das Intervall für die Aktualisierung des Embeds
             updateEmbed();
             setInterval(updateEmbed, 60000);
-
-            // Bearbeite die ursprüngliche Antwort, um den Erfolg zu bestätigen
             await interaction.editReply({
                 content: `Das Ticket-System wurde erfolgreich in <#${targetChannel.id}> eingerichtet.`,
             });

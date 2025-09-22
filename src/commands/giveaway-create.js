@@ -1,6 +1,5 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const { createGiveaway } = require('../events/giveawaySystem');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('giveaway-create')
@@ -26,7 +25,6 @@ module.exports = {
             option.setName('regeln')
                 .setDescription('Regeln (für keine Regeln einfach "false" schreiben)')
                 .setRequired(false)),
-
     async execute(interaction) {
         try {
             const zeit = interaction.options.getString('zeit');
@@ -34,9 +32,7 @@ module.exports = {
             const anzahl = interaction.options.getInteger('anzahl');
             const beschreibung = interaction.options.getString('beschreibung') || 'Keine';
             const regeln = interaction.options.getString('regeln') || 'Keine';
-
             await createGiveaway(interaction, zeit, preis, anzahl, beschreibung, regeln);
-
         } catch (error) {
             console.error('Failed to handle giveaway creation:', error);
             await interaction.reply({ content: 'Failed to create giveaway. Please try again.', ephemeral: true });

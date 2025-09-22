@@ -4,7 +4,6 @@ const path = require('path');
 const config = require('./config.json');
 const { logInfo, logSuccess, logError, logWarning } = require('./utils/logger');
 const loggingHandler = require('./events/loggingHandler');
-
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -15,10 +14,7 @@ const client = new Client({
         GatewayIntentBits.GuildMembers,
     ],
 });
-
 client.commands = new Collection();
-
-// Dynamically load events
 const loadEvents = (client) => {
     const eventFiles = fs.readdirSync('./src/events').filter(file => file.endsWith('.js'));
     for (const file of eventFiles) {
@@ -36,12 +32,9 @@ const loadEvents = (client) => {
     }
     logInfo('Events loaded successfully.');
 };
-
-// Dynamically load commands
 const loadCommands = (client) => {
     const commandsPath = path.join(__dirname, 'commands');
     const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
-
     for (const file of commandFiles) {
         const filePath = path.join(commandsPath, file);
         try {
@@ -58,10 +51,7 @@ const loadCommands = (client) => {
     }
     logInfo('Commands loaded successfully.');
 };
-
 loadEvents(client);
 loadCommands(client);
 loggingHandler(client);
-
-// Bot-Login mit Token aus config.json
 client.login(config.bot.token);

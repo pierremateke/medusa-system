@@ -3,7 +3,6 @@ const supportRoles = [
     '1380000179792380049'
 ];
 const LOG_CHANNEL_ID = '1380000255176736849';
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('ticket-add')
@@ -18,27 +17,20 @@ module.exports = {
         if (!member.roles.cache.some(r => supportRoles.includes(r.id))) {
             return interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
         }
-
         const user = interaction.options.getUser('user');
         const channel = interaction.channel;
-
         await channel.permissionOverwrites.edit(user.id, {
             ViewChannel: true,
             SendMessages: true
         });
-
         const pinned = await channel.messages.fetchPinned();
         const ticketMsg = pinned.first();
-
         if (ticketMsg) {
             await ticketMsg.reply({ content: `### ${user} successfully added to the ticket.` });
         } else {
             await channel.send({ content: `${user} successfully added to the ticket.` });
         }
-
         await interaction.reply({ content: 'Done', ephemeral: true });
-
-        // Logging
         try {
             const logChannel = await interaction.guild.channels.fetch(LOG_CHANNEL_ID);
             if (logChannel) {

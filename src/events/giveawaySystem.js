@@ -91,14 +91,15 @@ async function checkGiveaways(client) {
             const msg = await channel.messages.fetch(giveaway.messageId).catch(() => null);
             if (msg) {
                 await msg.edit({ embeds: [embed], components: [] }); 
+                
+                if (winner) {
+                    await msg.reply({ content: `Glückwunsch <@${winner}>, du hast das Giveaway \`${giveaway.id.slice(0, 8)}\` gewonnen!` });
+                } else {
+                    await msg.reply({ content: `Das Giveaway \`${giveaway.id.slice(0, 8)}\` ist beendet, aber es gab keine Teilnehmer.` });
+                }
             }
         } catch (error) {
             console.error("Failed to edit giveaway message:", error);
-        }
-        if (winner) {
-            await channel.send({ content: `Glückwunsch <@${winner}>, du hast das Giveaway \`${giveaway.id.slice(0, 8)}\` gewonnen!` });
-        } else {
-            await channel.send({ content: `Das Giveaway \`${giveaway.id.slice(0, 8)}\` ist beendet, aber es gab keine Teilnehmer.` });
         }
         if (config.giveawaySettings && config.giveawaySettings.joinRole) {
             try {
@@ -143,6 +144,7 @@ async function createGiveaway(interaction, zeit, preis, anzahl, beschreibung, re
     let giveaways = readGiveaways();
     giveaways.push(giveaway);
     saveGiveaways(giveaways);
+    
     const embed = new EmbedBuilder()
         .setColor(config.embedSettings.mainColor)
         .setTitle(`GIVEAWAY (\`#${giveaway.id.slice(0, 8)}\`)`)
@@ -168,10 +170,36 @@ async function createGiveaway(interaction, zeit, preis, anzahl, beschreibung, re
     const row = new ActionRowBuilder()
         .addComponents(joinButton, participantsButton);
     const msg = await interaction.channel.send({ embeds: [embed], components: [row] });
+    
     giveaway.messageId = msg.id;
-    saveGiveaways(giveaways);
+    giveaways = readGiveaways();
+    const giveawayIndex = giveaways.findIndex(g => g.id === giveaway.id);
+    if (giveawayIndex !== -1) {
+        giveaways[giveawayIndex].messageId = msg.id;
+        saveGiveaways(giveaways);
+    }
     await interaction.reply({ content: `Giveaway gestartet!`, ephemeral: true });
 }
+let giveawayTimer = null;
+
+function startGiveawayTimer(client) {
+    if (giveawayTimer) {
+        clearInterval(giveawayTimer);
+    }
+    giveawayTimer = setInterval(async () => {
+        await checkGiveaways(client);
+    }, 10000); // Check every 10 seconds
+    console.log('Giveaway timer started - checking every 10 seconds');
+}
+
+function stopGiveawayTimer() {
+    if (giveawayTimer) {
+        clearInterval(giveawayTimer);
+        giveawayTimer = null;
+        console.log('Giveaway timer stopped');
+    }
+}
+
 module.exports = {
     name: Events.InteractionCreate,
     async execute(interaction) {
@@ -192,5 +220,7 @@ module.exports = {
         }
     },
     checkGiveaways,
-    createGiveaway
+    createGiveaway,
+    startGiveawayTimer,
+    stopGiveawayTimer
 };

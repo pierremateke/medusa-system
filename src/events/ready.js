@@ -1,6 +1,7 @@
 const { ActivityType } = require('discord.js');
 const { logSuccess, logError, logInfo } = require('../utils/logger');
 const registerCommands = require('./registerCommands');
+const giveawaySystem = require('./giveawaySystem');
 module.exports = {
     name: 'ready',
     once: true,
@@ -31,6 +32,9 @@ module.exports = {
             setInterval(updateStatus, 10000); 
             updateStatus();
             logInfo('Status update system initialized successfully.');
+            
+            giveawaySystem.startGiveawayTimer(client);
+            logInfo('Giveaway timer system initialized successfully.');
         } catch (error) {
             logError(`An error occurred: ${error.message}`);
         }

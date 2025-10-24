@@ -10,7 +10,7 @@
     "participants": [
       "934085062683684874"
     ],
-    "ended": false,
+    "ended": true,
     "endTimestamp": 1749485759192
   },
   {
@@ -25,7 +25,7 @@
     "participants": [
       "934085062683684874"
     ],
-    "ended": false
+    "ended": true
   },
   {
     "id": "1749489192046",
@@ -37,7 +37,7 @@
     "regeln": "Keine",
     "endTime": 1749489252046,
     "participants": [],
-    "ended": false
+    "ended": true
   },
   {
     "id": "1749489567628",
@@ -51,7 +51,7 @@
     "participants": [
       "934085062683684874"
     ],
-    "ended": false
+    "ended": true
   },
   {
     "id": "1749489678353",
@@ -65,7 +65,7 @@
     "participants": [
       "934085062683684874"
     ],
-    "ended": false
+    "ended": true
   },
   {
     "id": "1749490074315",
@@ -79,7 +79,7 @@
     "participants": [
       "934085062683684874"
     ],
-    "ended": false
+    "ended": true
   },
   {
     "id": "1749490138160",
@@ -93,7 +93,7 @@
     "participants": [
       "934085062683684874"
     ],
-    "ended": false
+    "ended": true
   },
   {
     "id": "1749490491751",
@@ -107,7 +107,7 @@
     "participants": [
       "934085062683684874"
     ],
-    "ended": false
+    "ended": true
   },
   {
     "id": "1749490677955",
@@ -119,7 +119,7 @@
     "regeln": "Keine",
     "endTime": 1749490737954,
     "participants": [],
-    "ended": false
+    "ended": true
   },
   {
     "id": "1749491233903",
@@ -131,7 +131,7 @@
     "regeln": "Keine",
     "endTime": 1749491293902,
     "participants": [],
-    "ended": false,
+    "ended": true,
     "hostedBy": "934085062683684874"
   },
   {
@@ -144,7 +144,7 @@
     "regeln": "Keine",
     "endTime": 1749491376955,
     "participants": [],
-    "ended": false,
+    "ended": true,
     "hostedBy": "934085062683684874"
   },
   {
@@ -157,7 +157,7 @@
     "regeln": "Keine",
     "endTime": 1749491434900,
     "participants": [],
-    "ended": false,
+    "ended": true,
     "hostedBy": "934085062683684874"
   },
   {
@@ -170,7 +170,7 @@
     "regeln": "Keine",
     "endTime": 1749491483255,
     "participants": [],
-    "ended": false,
+    "ended": true,
     "hostedBy": "934085062683684874"
   },
   {
@@ -185,7 +185,7 @@
     "participants": [
       "934085062683684874"
     ],
-    "ended": false,
+    "ended": true,
     "hostedBy": "934085062683684874"
   },
   {
@@ -202,7 +202,67 @@
       "818213276726984724",
       "790183003711733760"
     ],
+    "ended": true,
+    "hostedBy": "934085062683684874"
+  },
+  {
+    "id": "1761322142048",
+    "channelId": "1431312053598945344",
+    "messageId": "1431313547597709433",
+    "preis": "test",
+    "anzahl": 1,
+    "beschreibung": "Keine",
+    "regeln": "Keine",
+    "endTime": 1761325742048,
+    "participants": [],
     "ended": false,
+    "hostedBy": "934085062683684874"
+  },
+  {
+    "id": "1761322166492",
+    "channelId": "1431312053598945345",
+    "messageId": "1431313649510645821",
+    "preis": "test",
+    "anzahl": 1,
+    "beschreibung": "Keine",
+    "regeln": "Keine",
+    "endTime": 1761322226492,
+    "participants": [
+      "934085062683684874",
+      "1384192509407657986"
+    ],
+    "ended": true,
+    "hostedBy": "934085062683684874"
+  },
+  {
+    "id": "1761322369474",
+    "channelId": "1431312053598945345",
+    "messageId": "1431314501151752235",
+    "preis": "test2",
+    "anzahl": 1,
+    "beschreibung": "Keine",
+    "regeln": "Keine",
+    "endTime": 1761322429470,
+    "participants": [
+      "934085062683684874"
+    ],
+    "ended": true,
+    "hostedBy": "934085062683684874"
+  },
+  {
+    "id": "1761322460862",
+    "channelId": "1431312053598945345",
+    "messageId": "1431314884653744280",
+    "preis": "test",
+    "anzahl": 1,
+    "beschreibung": "Keine",
+    "regeln": "Keine",
+    "endTime": 1761322520862,
+    "participants": [
+      "934085062683684874",
+      "1384192509407657986"
+    ],
+    "ended": true,
     "hostedBy": "934085062683684874"
   }
 ]

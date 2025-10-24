@@ -17,7 +17,7 @@ async function checkStreamerStatus(client) {
     const twitchData = readTwitchData();
     for (const { username, channelId } of twitchData) {
         try {
-            const response = await axios.get(`https:
+            const response = await axios.get(`https://api.twitch.tv/helix/streams?user_login=${username}`, {
                 headers: {
                     'Client-ID': twitchClientId,
                     'Authorization': `Bearer ${twitchAccessToken}`,
@@ -25,7 +25,7 @@ async function checkStreamerStatus(client) {
             });
             if (response.data && response.data.data && response.data.data.length > 0) {
                 const stream = response.data.data[0];
-                const streamUrl = `https:
+                const streamUrl = `https://twitch.tv/${username}`;
                 if (!liveAnnounced.get(username)) {
                     const embed = new EmbedBuilder()
                         .setColor('#6441a5')

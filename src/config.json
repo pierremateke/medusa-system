@@ -1,8 +1,8 @@
 {
   "bot": {
-    "token": "MTEwOTEzNDc3MDk1MDEyMzY5Mw.GO0EoW.s-xa0StczIdyqnSD6Z4Nq8jUCu9pkPdQOUdXSk",
-    "guildId": "1360739482382499960",
-    "clientId": "1109134770950123693"
+    "token": "MTQzMTMxMjE2MzA5OTYzOTgwOA.GaWwPR.cBkl_tBE7Kr5sJIUvpjQPf2LPYfpT6IUIIt0YU",
+    "guildId": "1431312053598945342",
+    "clientId": "1431312163099639808"
   },
 
 
@@ -41,19 +41,19 @@
   
   "loggingSystem": {
     "enabled": true,
-    "clearlogging": "1381614771006214155",
-    "joinlogging": "1381633220407464050",
-    "leavelogging": "1381633220407464050",
-    "channelcreatelogging": "1383867529687994540",
-    "channeldeletelogging": "1383867529687994540",
-    "rolecreatelogging": "1383867548436529322",
-    "roledeletelogging": "1383867548436529322",
-    "roleupdatelogging": "1383867548436529322",
-    "guildbanaddlogging": "1381628697483804712",
-    "guildbanremovelogging": "1381628697483804712",
-    "guildmemberupdatelogging": "1381628697483804712",
-    "messageupdatelogging": "1383867570922459159",
-    "messagedeletelogging": "1383867570922459159"
+    "clearlogging": "1431312053598945344",
+    "joinlogging": "1431312053598945344",
+    "leavelogging": "1431312053598945344",
+    "channelcreatelogging": "1431312053598945344",
+    "channeldeletelogging": "1431312053598945344",
+    "rolecreatelogging": "1431312053598945344",
+    "roledeletelogging": "1431312053598945344",
+    "roleupdatelogging": "1431312053598945344",
+    "guildbanaddlogging": "1431312053598945344",
+    "guildbanremovelogging": "1431312053598945344",
+    "guildmemberupdatelogging": "1431312053598945344",
+    "messageupdatelogging": "1431312053598945344",
+    "messagedeletelogging": "1431312053598945344"
   },
 
 
@@ -243,7 +243,7 @@
   "verifySystem": {
     "enabled": true,
     "verifiedRoleId": "1380000195470950462",
-    "blacklistedServerIds": ["12121212", "12121221"],
+    "blacklistedServerIds": ["1360739482382499960"],
     "logChannelId": "1380618361796431972",
     "minAccountAgeDays": 7,
     "buttonLabel": "Klick hier",

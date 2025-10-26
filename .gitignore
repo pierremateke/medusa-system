@@ -1,0 +1,29 @@
+# Node modules
+node_modules/
+
+# Configuration files with sensitive data
+src/config.json
+
+# Database files
+src/database/*.json
+
+# Transcripts
+src/transcripts/*.html
+
+# Environment variables
+.env
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+

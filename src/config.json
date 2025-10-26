@@ -1,6 +1,6 @@
 {
   "bot": {
-    "token": "MTQzMTMxMjE2MzA5OTYzOTgwOA.GaWwPR.cBkl_tBE7Kr5sJIUvpjQPf2LPYfpT6IUIIt0YU",
+    "token": "MTQzMTMxMjE2MzA5OTYzOTgwOA.GyuLFq.qREnbVGQtadPY-qPpW9RRHde-91EHEwBIyw89w",
     "guildId": "1431312053598945342",
     "clientId": "1431312163099639808"
   },
@@ -251,6 +251,20 @@
       "title": "VERIFIZIERUNG",
       "description": "Klicke auf **Klick hier** um dich zu verifizieren.",
       "image": "https://cdn.discordapp.com/attachments/1282356111424356414/1380618813594276012/placeholder-banner.png?ex=684488f7&is=68433777&hm=a1d58dadfa7a0346befc71efc5cb3ca385da0a434166d4147b14b0574076717a&"
+    }
+  },
+
+
+  "fivemMonitor": {
+    "enabled": true,
+    "serverIp": "91.212.121.69",
+    "serverPort": "30120",
+    "statusChannelId": "1431967465440804924",
+    "updateInterval": 30000,
+    "statusMonitorInterval": 10000,
+    "botStatus": {
+      "enabled": true,
+      "statusFormat": "[{players}/{maxPlayers}] auf Medusa Roleplay"
     }
   }
 }

@@ -188,8 +188,7 @@ function startGiveawayTimer(client) {
     }
     giveawayTimer = setInterval(async () => {
         await checkGiveaways(client);
-    }, 10000); // Check every 10 seconds
-    console.log('Giveaway timer started - checking every 10 seconds');
+    }, 10000);
 }
 
 function stopGiveawayTimer() {
